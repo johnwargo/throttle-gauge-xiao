@@ -31,7 +31,7 @@ void setup() {
   // make sure we have an appropriate amount of NeoPixels to make a gauge
   if (NUM_LEDS < 5) {
     Serial.println("Invalid Configuration");
-    Serial.println("Number of NUM_LEDS must be greater than 5.");
+    Serial.println("Number of NUM_LEDS must be greater than 5");
     while (true) delay(100);  //loops forever
   }
 
@@ -64,6 +64,7 @@ void throttleReader(void* pvParameters) {
     // read the voltage from the throttle pin, returns values from 0 to 1023
     throttleValue = analogRead(THROTTLE_PIN);
     // throw in a little delay for the ESP32 watchdog to do its cleanup
+    // https://randomerrors.dev/posts/2023/esp32-watchdog-got-triggered/
     delay(25);
   }
 }
@@ -71,7 +72,7 @@ void throttleReader(void* pvParameters) {
 void gaugeUpdater(void* pvParameters) {
 
   int illuminatedPixels;
-  
+
   Serial.print("Gauge Updater running on core ");
   Serial.println(xPortGetCoreID());
 
@@ -91,6 +92,7 @@ void gaugeUpdater(void* pvParameters) {
       fill_solid(leds, throttleValue, CRGB::Green);
     }
     // throw in a little delay for the ESP32 watchdog to do its cleanup
+    // https://randomerrors.dev/posts/2023/esp32-watchdog-got-triggered/
     delay(25);
   }
 }
