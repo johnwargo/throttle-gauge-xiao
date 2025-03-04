@@ -12,14 +12,15 @@
 #define THROTTLE_PIN A0
 #define DATA_PIN 1
 
-// task handlers for the code running on separate processor cores
-TaskHandle_t Task0;
-TaskHandle_t Task1;
+// Adjusts maximum voltage levels read by the device
+// will adjust this based on total voltage output from throttle
+// to ensure we can max out the gauge
+#define DIVISOR 1023
 
 CRGB leds[NUM_LEDS];
-
 int throttleValue = 0;
 int previousThrottleValue = -1;
+int numIlluminatedPixels;
 
 void setup() {
 
@@ -30,69 +31,50 @@ void setup() {
 
   // make sure we have an appropriate amount of NeoPixels to make a gauge
   if (NUM_LEDS < 5) {
-    Serial.println("Invalid Configuration");
-    Serial.println("Number of NUM_LEDS must be greater than 5");
+    Serial.println("\nInvalid Configuration\nNumber of NUM_LEDS must be greater than 5");
     while (true) delay(100);  //loops forever
   }
 
   // initialize the FastLED library
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-  // turn off all LEDs
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
-
-  // Pin the throttle reader to processor core 0
-  xTaskCreatePinnedToCore(throttleReader, "Throttle Reader", 10240, NULL, 0, &Task0, 0);
-  // give the processor some time to get the thread running
-  delay(500);
-  // Pin the gauge updater to processor core 1
-  xTaskCreatePinnedToCore(gaugeUpdater, "Gauge Updater", 10240, NULL, 0, &Task1, 1);
-  // give the processor some time to get the thread running
-  delay(500);
+  testLEDs();
 }
 
 void loop() {
-  // nothing to do here since we have dedicated tasks
-  // running on each core looping away infinitely
-}
-
-void throttleReader(void* pvParameters) {
-
-  Serial.print("Throttle Reader running on core ");
-  Serial.println(xPortGetCoreID());
-
-  for (;;) {  // an infinite loop
-    // read the voltage from the throttle pin, returns values from 0 to 1023
-    throttleValue = analogRead(THROTTLE_PIN);
-    // throw in a little delay for the ESP32 watchdog to do its cleanup
-    // https://randomerrors.dev/posts/2023/esp32-watchdog-got-triggered/
+  // read the voltage from the throttle pin, returns values from 0 to 1023
+  throttleValue = analogRead(THROTTLE_PIN);
+  if (throttleValue != previousThrottleValue) {
+    // reset the previous throttle value
+    previousThrottleValue = throttleValue;
+    // update the gauge; convert the voltage to a number of NeoPixels
+    numIlluminatedPixels = int((throttleValue / DIVISOR) * NUM_LEDS);
+    // turn off all of the LEDs; this may happen fast enough to not be visible
+    fill_solid(leds, NUM_LEDS, CRGB::Black);
+    // light the green ones based on the throttle value
+    fill_solid(leds, throttleValue, CRGB::Green);
+  } else {
     delay(25);
   }
 }
 
-void gaugeUpdater(void* pvParameters) {
+void testLEDs() {
 
-  int numIlluminatedPixels;
+  int numColors = 3;
+  uint32_t colors[] = { CRGB::Red, CRGB::Green, CRGB::Blue };
 
-  Serial.print("Gauge Updater running on core ");
-  Serial.println(xPortGetCoreID());
-
-  for (;;) {  // an infinite loop
-    // Did the throttle value change?
-    if (throttleValue != previousThrottleValue) {
-      // reset the previous throttle value
-      previousThrottleValue = throttleValue;
-      // update the gauge
-      // convert the voltage to a number of NeoPixels
-      // TODO: Scale this value a bit so we can achieve full throttle
-      numIlluminatedPixels = int((throttleValue / 1023) * NUM_LEDS);
-      // turn off all of the LEDs; this may happen fast enough to not be visible
-      // otherwise I may have to do this manually, we'll see
-      fill_solid(leds, NUM_LEDS, CRGB::Black);
-      // light the green ones based on the throttle value
-      fill_solid(leds, throttleValue, CRGB::Green);
+  for (int i = 0; i < numColors; i++) {
+    FastLED.clear();
+    FastLED.show();
+    for (int j = 0; j < NUM_LEDS; j++) {
+      leds[j] = colors[i];
+      FastLED.show();
+      delay(25);
     }
-    // throw in a little delay for the ESP32 watchdog to do its cleanup
-    // https://randomerrors.dev/posts/2023/esp32-watchdog-got-triggered/
-    delay(25);
+    for (int j = NUM_LEDS - 1; j > -1; j--) {
+      leds[j] = CRGB::Black;
+      FastLED.show();
+      delay(25);
+    }
+    delay(500);
   }
 }
