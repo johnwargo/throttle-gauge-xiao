@@ -71,7 +71,7 @@ void throttleReader(void* pvParameters) {
 
 void gaugeUpdater(void* pvParameters) {
 
-  int illuminatedPixels;
+  int numIlluminatedPixels;
 
   Serial.print("Gauge Updater running on core ");
   Serial.println(xPortGetCoreID());
@@ -84,7 +84,7 @@ void gaugeUpdater(void* pvParameters) {
       // update the gauge
       // convert the voltage to a number of NeoPixels
       // TODO: Scale this value a bit so we can achieve full throttle
-      illuminatedPixels = int(throttleValue / 1023);
+      numIlluminatedPixels = int((throttleValue / 1023) * NUM_LEDS);
       // turn off all of the LEDs; this may happen fast enough to not be visible
       // otherwise I may have to do this manually, we'll see
       fill_solid(leds, NUM_LEDS, CRGB::Black);
