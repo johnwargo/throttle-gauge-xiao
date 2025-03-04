@@ -80,6 +80,7 @@ void gaugeUpdater(void* pvParameters) {
       previousThrottleValue = throttleValue;
       // update the gauge
       // convert the voltage to a number of NeoPixels
+      // TODO: Scale this value a bit so we can achieve full throttle
       int illuminatedPixels = int(throttleValue / 1023);
       // turn off all of the LEDs; this may happen fast enough to not be visible
       // otherwise I may have to do this manually, we'll see
