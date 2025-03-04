@@ -2,7 +2,8 @@
  * Throttle Gauge (XIAO)
  * By John M. Wargo
  * https://johnwargo.com
- *
+ * 
+ * Created March 3, 2025
  ************************************************************/
 
 #include <FastLED.h>
@@ -31,7 +32,7 @@ void loop() {
   // read the voltage from the throttle pin, returns values from 0 to 1023
   int throttleValue = analogRead(THROTTLE_PIN);
   // convert the voltage to a number of NeoPixels
-  int illuminatedPixels = int( do some math here);
+  int illuminatedPixels = int(do some math here);
   // illuminate the appropriate number of NeoPixels Green
 
   // turn the rest of the NeoPixels off
