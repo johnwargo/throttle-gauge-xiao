@@ -1,5 +1,5 @@
 /************************************************************
- * Xiao Throttle Gauge
+ * Throttle Gauge (XIAO)
  * By John M. Wargo
  * https://johnwargo.com
  *
