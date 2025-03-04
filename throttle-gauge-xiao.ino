@@ -82,6 +82,7 @@ void gaugeUpdater(void* pvParameters) {
       // convert the voltage to a number of NeoPixels
       int illuminatedPixels = int(throttleValue / 1023);
       // turn off all of the LEDs; this may happen fast enough to not be visible
+      // otherwise I may have to do this manually, we'll see
       fill_solid(leds, NUM_LEDS, CRGB::Black);
       // light the green ones based on the throttle value
       fill_solid(leds, throttleValue, CRGB::Green);
