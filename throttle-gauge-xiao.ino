@@ -28,17 +28,17 @@ void setup() {
   Serial.println("\nThrottle Gauge");
   Serial.println("By John M. Wargo\n");
 
-  // initialize the FastLED library
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-  // turn off all of the LEDs
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
-
   // make sure we have an appropriate amount of NeoPixels to make a gauge
   if (NUM_LEDS < 5) {
     Serial.println("Invalid Configuration");
     Serial.println("Number of NUM_LEDS must be greater than 5.");
     while (true) delay(100);  //loops forever
   }
+
+  // initialize the FastLED library
+  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+  // turn off all LEDs
+  fill_solid(leds, NUM_LEDS, CRGB::Black);
 
   // Pin the throttle reader to processor core 0
   xTaskCreatePinnedToCore(throttleReader, "Throttle Reader", 10240, NULL, 0, &Task0, 0);
@@ -70,6 +70,8 @@ void throttleReader(void* pvParameters) {
 
 void gaugeUpdater(void* pvParameters) {
 
+  int illuminatedPixels;
+  
   Serial.print("Gauge Updater running on core ");
   Serial.println(xPortGetCoreID());
 
@@ -81,7 +83,7 @@ void gaugeUpdater(void* pvParameters) {
       // update the gauge
       // convert the voltage to a number of NeoPixels
       // TODO: Scale this value a bit so we can achieve full throttle
-      int illuminatedPixels = int(throttleValue / 1023);
+      illuminatedPixels = int(throttleValue / 1023);
       // turn off all of the LEDs; this may happen fast enough to not be visible
       // otherwise I may have to do this manually, we'll see
       fill_solid(leds, NUM_LEDS, CRGB::Black);
