@@ -17,15 +17,14 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   Serial.println("\nThrottle Gauge");
-
+  // initialize the FastLED library
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-
+  // check to make sure we have an appropriate amount of NeoPixels to make a gauge
   if (NUM_LEDS < 5) {
     Serial.println("Invalid Configuration");
     Serial.println("Number of NUM_LEDS must be greater than 5.");
     while (true) delay(100);  //loops forever
   }
-
 }
 
 void loop() {
