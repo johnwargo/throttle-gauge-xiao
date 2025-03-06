@@ -18,7 +18,8 @@ CRGB leds[NUM_LEDS];
 // The Arduino reads between 0 and 1023 while the ESP32 reads between 0 and 4095
 // Adjusts maximum voltage levels read by the device will adjust this based on 
 // the total voltage output from throttle to ensure we can max out the gauge
-int divisor = 4095;
+// const int divisor = 1023;  // for Arduino devices
+const int divisor = 4095;   // for ESP32 devices
 int previousThrottleValue = -1;
 
 void setup() {
