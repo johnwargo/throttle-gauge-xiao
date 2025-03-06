@@ -44,25 +44,27 @@ void setup() {
 }
 
 void loop() {
+  int throttleValue;
+  float tmpVal;
+
   // read the voltage from the throttle pin, returns values from 0 to 1023
-  int throttleValue = analogRead(THROTTLE_PIN);
+  throttleValue = analogRead(THROTTLE_PIN);
   if (throttleValue != previousThrottleValue) {
+    Serial.printf("Throttle Value: %d\n", throttleValue);
     // reset the previous throttle value
     previousThrottleValue = throttleValue;
 
-    Serial.printf("Throttle Value: %d\n", throttleValue);
-    Serial.printf("Divisor: %d\n", DIVISOR);
-    Serial.printf("Ratio: %f\n", throttleValue / DIVISOR);
-
     // update the gauge; convert the voltage to a number of NeoPixels
-    float tmpVal = (throttleValue / DIVISOR) * NUM_LEDS;
-    Serial.printf("Value: %f\n", tmpVal);
+    tmpVal = throttleValue / DIVISOR;
+    Serial.printf("Value 1: %f\n", tmpVal);
+    tmpVal = tmpVal * NUM_LEDS;
+    Serial.printf("Value 2: %f\n", tmpVal);
     int numIlluminatedPixels = int(tmpVal);
     Serial.printf("Pixels: %d\n", numIlluminatedPixels);
     FastLED.clear();
     if (numIlluminatedPixels > 0) {
       // light the green ones based on the throttle value
-      fill_solid(leds, throttleValue, CRGB::Green);
+      fill_solid(leds, numIlluminatedPixels, CRGB::Green);
     }
     FastLED.show();
     delay(100);  // just for testing
