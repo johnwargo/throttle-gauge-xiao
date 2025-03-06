@@ -20,9 +20,8 @@
 #define DIVISOR 4095
 
 CRGB leds[NUM_LEDS];
-int throttleValue = 0;
+
 int previousThrottleValue = -1;
-int numIlluminatedPixels;
 
 void setup() {
 
@@ -46,13 +45,19 @@ void setup() {
 
 void loop() {
   // read the voltage from the throttle pin, returns values from 0 to 1023
-  throttleValue = analogRead(THROTTLE_PIN);
+  int throttleValue = analogRead(THROTTLE_PIN);
   if (throttleValue != previousThrottleValue) {
     // reset the previous throttle value
     previousThrottleValue = throttleValue;
+
     Serial.printf("Throttle Value: %d\n", throttleValue);
+    Serial.printf("Divisor: %d\n", DIVISOR);
+    Serial.printf("Ratio: %f\n", throttleValue / DIVISOR);
+
     // update the gauge; convert the voltage to a number of NeoPixels
-    numIlluminatedPixels = int((throttleValue / DIVISOR) * NUM_LEDS);
+    float tmpVal = (throttleValue / DIVISOR) * NUM_LEDS;
+    Serial.printf("Value: %f\n", tmpVal);
+    int numIlluminatedPixels = int(tmpVal);
     Serial.printf("Pixels: %d\n", numIlluminatedPixels);
     FastLED.clear();
     if (numIlluminatedPixels > 0) {
