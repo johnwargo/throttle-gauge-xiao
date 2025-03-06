@@ -43,6 +43,7 @@ void setup() {
 void loop() {
   // read the voltage from the throttle pin, returns values from 0 to 1023
   throttleValue = analogRead(THROTTLE_PIN);
+  Serial.printf("Throttle Value: %d", throttleValue);
   if (throttleValue != previousThrottleValue) {
     // reset the previous throttle value
     previousThrottleValue = throttleValue;
@@ -52,6 +53,8 @@ void loop() {
     fill_solid(leds, NUM_LEDS, CRGB::Black);
     // light the green ones based on the throttle value
     fill_solid(leds, throttleValue, CRGB::Green);
+    // just for testing
+    delay(500);
   } else {
     delay(25);
   }
