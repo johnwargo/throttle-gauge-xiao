@@ -12,10 +12,12 @@
 #define THROTTLE_PIN A0
 #define DATA_PIN 1
 
+// The Arduino reads between 0 and 1023
+// The ESP32 reads between 0 and 4095
 // Adjusts maximum voltage levels read by the device
 // will adjust this based on total voltage output from throttle
 // to ensure we can max out the gauge
-#define DIVISOR 1023
+#define DIVISOR 4095
 
 CRGB leds[NUM_LEDS];
 int throttleValue = 0;
@@ -35,6 +37,8 @@ void setup() {
     while (true) delay(100);  //loops forever
   }
 
+  pinMode(A0, INPUT);
+
   // initialize the FastLED library
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
   testLEDs();
@@ -43,18 +47,20 @@ void setup() {
 void loop() {
   // read the voltage from the throttle pin, returns values from 0 to 1023
   throttleValue = analogRead(THROTTLE_PIN);
-  Serial.printf("Throttle Value: %d", throttleValue);
   if (throttleValue != previousThrottleValue) {
     // reset the previous throttle value
     previousThrottleValue = throttleValue;
+    Serial.printf("Throttle Value: %d\n", throttleValue);
     // update the gauge; convert the voltage to a number of NeoPixels
     numIlluminatedPixels = int((throttleValue / DIVISOR) * NUM_LEDS);
-    // turn off all of the LEDs; this may happen fast enough to not be visible
-    fill_solid(leds, NUM_LEDS, CRGB::Black);
-    // light the green ones based on the throttle value
-    fill_solid(leds, throttleValue, CRGB::Green);
-    // just for testing
-    delay(500);
+    Serial.printf("Pixels: %d\n", numIlluminatedPixels);
+    FastLED.clear();
+    if (numIlluminatedPixels > 0) {
+      // light the green ones based on the throttle value
+      fill_solid(leds, throttleValue, CRGB::Green);
+    }
+    FastLED.show();
+    delay(100);  // just for testing
   } else {
     delay(25);
   }
