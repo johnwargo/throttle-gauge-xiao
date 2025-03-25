@@ -11,15 +11,17 @@
 #define DEBUG
 #define NUM_LEDS 7
 #define THROTTLE_PIN A0
+#define THROTTLE_MIN 600
 #define DATA_PIN 1
 
 CRGB leds[NUM_LEDS];
 
 // The Arduino reads between 0 and 1023 while the ESP32 reads between 0 and 4095
-// Adjusts maximum voltage levels read by the device will adjust this based on 
+// Adjusts maximum voltage levels read by the device will adjust this based on
 // the total voltage output from throttle to ensure we can max out the gauge
 // const int divisor = 1023;  // for Arduino devices
-const int divisor = 4095;   // for ESP32 devices
+// const int divisor = 4095;   // for ESP32 devices
+const int divisor = 1650;  // for ESP32 devices
 int previousThrottleValue = -1;
 
 void setup() {
@@ -55,10 +57,14 @@ void loop() {
 #endif
     // reset the previous throttle value
     previousThrottleValue = throttleValue;
-    // update the gauge; convert the voltage to a number of NeoPixels
-    // Calculate the ratio as a float but then save it to to `numIlluminatedPixels` as an
-    // integer result of the integer multiplication.
-    numIlluminatedPixels = ((float)throttleValue / (float)divisor) * NUM_LEDS;
+    if (throttleValue > THROTTLE_MIN) {
+      // update the gauge; convert the voltage to a number of NeoPixels
+      // Calculate the ratio as a float but then save it to to `numIlluminatedPixels` as an
+      // integer result of the integer multiplication.
+      numIlluminatedPixels = ((float)throttleValue / (float)divisor) * NUM_LEDS;
+    } else {
+      numIlluminatedPixels = 0;
+    }
     // Serial.printf("Pixels: %d\n", numIlluminatedPixels);
     FastLED.clear();
     if (numIlluminatedPixels > 0) {
@@ -67,7 +73,7 @@ void loop() {
     }
     FastLED.show();
 #ifdef DEBUG
-    delay(100);  // just for testing
+    delay(500);  // just for testing
 #endif
   } else {
     delay(25);
