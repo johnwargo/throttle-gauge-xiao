@@ -16,7 +16,8 @@
 #define LEDS_BRAKE 5
 #define LED_PIN_BRAKE 1
 
-#define THROTTLE_PIN A3
+#define INPUT_BRAKE A2
+#define INPUT_THROTTLE A3
 #define THROTTLE_MIN 600
 
 CRGB tLeds[LEDS_THROTTLE];
@@ -48,7 +49,8 @@ void setup() {
   FastLED.addLeds<NEOPIXEL, LED_PIN_BRAKE>(bLeds, LEDS_BRAKE);
   // testLEDs();
 
-  pinMode(A0, INPUT);
+  pinMode(INPUT_THROTTLE, INPUT);
+  pinMode(INPUT_BRAKE, INPUT);
 }
 
 void loop() {
@@ -60,7 +62,7 @@ void loop() {
   // int numIlluminatedPixels;
 
   //   // read the voltage from the throttle pin, returns values from 0 to 1023
-  //   throttleValue = analogRead(THROTTLE_PIN);
+  //   throttleValue = analogRead(INPUT_THROTTLE);
   //   if (throttleValue != previousThrottleValue) {
   // #ifdef DEBUG
   //     Serial.printf("Throttle Value: %d\n", throttleValue);
