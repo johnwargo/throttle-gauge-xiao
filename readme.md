@@ -12,9 +12,13 @@ The guage is a strip of 20 Adafruit NeoPixels arranged in a strip. The first 15 
 + [Breadboard-friendly RGB Smart NeoPixel - Sheet of 25](https://www.adafruit.com/product/1558)
 + [12V to 5V DC Buck Converter](https://www.amazon.com/Converter-Voltage-Waterproof-Regulator-Step-Down/dp/B07Y2V1F8V)
 
-## Fritzing
+## Gauge PCB
 
 To make the gauge easier to assemble, I created a circuit board for it using [Fritzing](https://fritzing.org/). I always wanted to learn how to design my own circuit boards, so this was my very first. You can find the design for the board in the repository's [Fritzing](Fritzing) folder.
+
+![Fritzing PCB View](images/fritzing-pcb.png)
+
+
 
 Reads voltage (0 to 15V) on pin `A0`
 
