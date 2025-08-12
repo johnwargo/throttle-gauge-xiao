@@ -20,16 +20,25 @@ To make the gauge easier to assemble, I created a circuit board for it using [Fr
 
 ## Inputs and Outputs
 
-The circuit drives the NeoPixel arrays on the ESP32's digital pins 0 (throttle) and 1 (brake). 
+The circuit drives the NeoPixel arrays on the ESP32's digital pins 2 (throttle) and 3 (brake). 
 
 ``` c
-#define LEDS_THROTTLE 15
-#define LED_PIN_THROTTLE 0
+#define BRAKE_LEDS 5
+#define THROTTLE_LEDS 15
 
-#define LEDS_BRAKE 5
-#define LED_PIN_BRAKE 1
+#define BRAKE_PIN 3
+#define THROTTLE_PIN 2
 ```
 
+The circuit reads the throttle and brake inputs via analog inputs A0 and A1:
+
+
+``` c
+#define INPUT_BRAKE A0
+#define INPUT_THROTTLE A1
+```
+
+The Xiao ESP32C6 only has these two analog input pins exposed through the header pins.
 
 
 ## Reference
