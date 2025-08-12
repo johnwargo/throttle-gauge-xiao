@@ -23,11 +23,11 @@ To make the gauge easier to assemble, I created a circuit board for it using [Fr
 The circuit drives the NeoPixel arrays on the ESP32's digital pins 2 (throttle) and 3 (brake). 
 
 ``` c
-#define BRAKE_LEDS 5
-#define THROTTLE_LEDS 15
+#define NUM_BRAKE_LEDS 5
+#define NUM_THROTTLE_LEDS 15
 
-#define BRAKE_PIN 3
-#define THROTTLE_PIN 2
+#define BRAKE_LED_PIN 3
+#define THROTTLE_LED_PIN 2
 ```
 
 The circuit reads the throttle and brake inputs via analog inputs A0 and A1:
