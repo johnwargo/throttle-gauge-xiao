@@ -1,5 +1,5 @@
 /************************************************************
- * Throttle Gauge (XIAO)
+ * Throttle Gauge (XIAO ESP32C6)
  * By John M. Wargo
  * https://johnwargo.com
  * 
@@ -38,9 +38,13 @@ void setup() {
   Serial.println("\nThrottle Gauge");
   Serial.println("By John M. Wargo\n");
 
-  // m#define BRAKE_LEDS 5ake sure we have an appropriate amount of NeoPixels to make a gauge
-  if (THROTTLE_LEDS < 5) {
-    Serial.println("\nInvalid Configuration\nNumber of THROTTLE_LEDS must be greater than 5");
+  // make sure we have an appropriate amount of NeoPixels to make a gauge
+  if (THROTTLE_LEDS < 10) {
+    Serial.println("\nInvalid Configuration\nNumber of THROTTLE_LEDS must be greater than 9");
+    while (true) delay(100);  //loops forever
+  }
+  if (BRAKE_LEDS < 1) {
+    Serial.println("\nInvalid Configuration\nNumber of BRAKE_LEDS must be greater than 0");
     while (true) delay(100);  //loops forever
   }
 
