@@ -18,7 +18,7 @@
 
 #define INPUT_BRAKE A0
 #define INPUT_THROTTLE A1
-// #define THROTTLE_MIN 600
+#define THROTTLE_MIN 600
 
 CRGB tLeds[NUM_THROTTLE_LEDS];
 CRGB bLeds[NUM_BRAKE_LEDS];
@@ -72,7 +72,7 @@ void loop() {
       // update the gauge; convert the voltage to a number of NeoPixels
       // Calculate the ratio as a float but then save it to to `numIlluminatedPixels` as an
       // integer result of the integer multiplication.
-      numIlluminatedPixels = ((float)throttleValue / (float)divisor) * LEDS_THROTTLE;
+      numIlluminatedPixels = ((float)throttleValue / (float)divisor) * NUM_THROTTLE_LEDS;
     } else {
       numIlluminatedPixels = 0;
     }
@@ -80,7 +80,7 @@ void loop() {
     FastLED.clear();
     if (numIlluminatedPixels > 0) {
       // light the green ones based on the throttle value
-      fill_solid(leds, numIlluminatedPixels, CRGB::Green);
+      fill_solid(tLeds, numIlluminatedPixels, CRGB::Green);
     }
     FastLED.show();
 #ifdef DEBUG
@@ -92,11 +92,7 @@ void loop() {
 }
 
 void testLEDs() {
-
-  int throttleDelay = 18;
-  // int numColors = 3;
-  // uint32_t colors[] = { CRGB::Red, CRGB::Green, CRGB::Blue };
-
+#define testDelay 18
   Serial.println("Testing LEDs");
 
   FastLED.clear();
@@ -104,12 +100,12 @@ void testLEDs() {
   for (int j = 0; j < NUM_THROTTLE_LEDS; j++) {
     tLeds[j] = CRGB::Green;
     FastLED.show();
-    delay(throttleDelay);
+    delay(testDelay);
   }
   for (int j = NUM_THROTTLE_LEDS - 1; j > -1; j--) {
     tLeds[j] = CRGB::Black;
     FastLED.show();
-    delay(throttleDelay);
+    delay(testDelay);
   }
   FastLED.clear();
   FastLED.show();
