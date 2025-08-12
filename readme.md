@@ -1,6 +1,10 @@
-# Throttle Gauge (XAIO)
+# Throttle Gauge (XAIO ESP32-C6)
 
-Built using a Seeed Studio XIAO C6 board and a bunch of NeoPixels.
+A simple throttle guage for my friend's Porsche Boxter race car.
+
+The guage is a strip of 20 Adafruit NeoPixels arranged in a strip. The first 15 represent the throttle position (from 1 to 15). Illuminating the NeoPixels in Green until the throttle hits 80%, then all NeoPixels turn White. The last 5 NeoPixels indicate whether the brake is on or off; the final 5 NeoPixels illuminate Red when the driver presses the brake pedal.
+
+![NeoPixel strip](images/neopixel-strip.jpg)
 
 Reads voltage (0 to 15V) on pin `A0`
 
