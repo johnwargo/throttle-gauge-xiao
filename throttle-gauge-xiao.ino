@@ -11,10 +11,10 @@
 #define DEBUG
 
 #define LEDS_THROTTLE 15
-#define DATA_PIN_THROTTLE 0
+#define LED_PIN_THROTTLE 0
 
 #define LEDS_BRAKE 5
-#define DATA_PIN_BRAKE 1
+#define LED_PIN_BRAKE 1
 
 #define THROTTLE_PIN A3
 #define THROTTLE_MIN 600
@@ -44,8 +44,8 @@ void setup() {
   }
 
   FastLED.setBrightness(255);
-  FastLED.addLeds<NEOPIXEL, DATA_PIN_THROTTLE>(tLeds, LEDS_THROTTLE);
-  FastLED.addLeds<NEOPIXEL, DATA_PIN_BRAKE>(bLeds, LEDS_BRAKE);
+  FastLED.addLeds<NEOPIXEL, LED_PIN_THROTTLE>(tLeds, LEDS_THROTTLE);
+  FastLED.addLeds<NEOPIXEL, LED_PIN_BRAKE>(bLeds, LEDS_BRAKE);
   // testLEDs();
 
   pinMode(A0, INPUT);
