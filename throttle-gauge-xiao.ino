@@ -109,10 +109,9 @@ void updateThrottle() {
 #ifdef DEBUG
       Serial.printf("Pixels: %d\n", numIlluminatedPixels);
 #endif
-      FastLED.clear();
       if (numIlluminatedPixels > 0) {
         // light the green ones based on the throttle value
-        fill_solid(tLeds, numIlluminatedPixels, CRGB::Green);
+        for (int j = 0; j < NUM_THROTTLE_LEDS; j++) tLeds[j] = CRGB::Green;        
       }
     }
   }
