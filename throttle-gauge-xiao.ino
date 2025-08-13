@@ -20,15 +20,20 @@
 #define INPUT_THROTTLE A1
 #define THROTTLE_MIN 600
 
+// FastLED LED Arrays
 CRGB tLeds[NUM_THROTTLE_LEDS];
 CRGB bLeds[NUM_BRAKE_LEDS];
 
 // The Arduino reads between 0 and 1023 while the ESP32 reads between 0 and 4095
 // Adjusts maximum voltage levels read by the device will adjust this based on
 // the total voltage output from throttle to ensure we can max out the gauge
-// const int divisor = 1023;  // for Arduino devices
-const int divisor = 4095;  // for ESP32 devices
-int previousThrottleValue = -1;
+// const int inputDivisor = 1023;  // for Arduino devices
+// const int inputDivisor = 4095;  // for ESP32 devices
+const int inputDivisor = 4095;  // for ESP32 devices
+
+int prevThrottleState = -1;
+bool prevBrakeState = false;
+bool prevMaxThrottle = false;
 
 void setup() {
 
@@ -57,38 +62,61 @@ void setup() {
 }
 
 void loop() {
+  updateThrottle();
+  updateBrake();
+  FastLED.show();
+  delay(25);
+}
+
+void updateThrottle() {
+
+  // Conditions
+  // throttle value is the same as previous - do nothing
+  // throttle value was greater than 80% and is greater than 80% now - do nothing
+  // throttle value is different than last time - update LED state
+
   int throttleValue;
   int numIlluminatedPixels;
+  float pixelRatio;
+  bool maxThrottle;
+  bool stateChange;
 
-  // read the voltage from the throttle pin, returns values from 0 to 1023
+  // read the voltage from the throttle pin
   throttleValue = analogRead(INPUT_THROTTLE);
-  if (throttleValue != previousThrottleValue) {
+  // calculate the pixel ratio
+  pixelRatio = (float)throttleValue / (float)inputDivisor;
+  maxThrottle = pixelRatio >= 0.80;  // 80% or more means max throttle
+  // Did the state change in any way?
+  stateChange = (throttleValue != prevThrottleState) || (maxThrottle != prevMaxThrottle);
+  // reset our `prev` values for next check
+  prevThrottleState = throttleValue;
+  prevMaxThrottle = MaxThrottle
+
+    // Only update the throttle LEDs if there's a change in throttle state
+    if (stateChange) {
 #ifdef DEBUG
     Serial.printf("Throttle Value: %d\n", throttleValue);
 #endif
-    // reset the previous throttle value
-    previousThrottleValue = throttleValue;
     if (throttleValue > THROTTLE_MIN) {
-      // update the gauge; convert the voltage to a number of NeoPixels
       // Calculate the ratio as a float but then save it to to `numIlluminatedPixels` as an
       // integer result of the integer multiplication.
-      numIlluminatedPixels = ((float)throttleValue / (float)divisor) * NUM_THROTTLE_LEDS;
+
+      numIlluminatedPixels = pixelRatio * NUM_THROTTLE_LEDS;
     } else {
       numIlluminatedPixels = 0;
     }
-    // Serial.printf("Pixels: %d\n", numIlluminatedPixels);
+#ifdef DEBUG
+    Serial.printf("Pixels: %d\n", numIlluminatedPixels);
+#endif
     FastLED.clear();
     if (numIlluminatedPixels > 0) {
       // light the green ones based on the throttle value
       fill_solid(tLeds, numIlluminatedPixels, CRGB::Green);
     }
-    FastLED.show();
-#ifdef DEBUG
-    delay(500);  // just for testing
-#endif
-  } else {
-    delay(25);
   }
+}
+
+void updateBrake() {
 }
 
 void testLEDs() {
