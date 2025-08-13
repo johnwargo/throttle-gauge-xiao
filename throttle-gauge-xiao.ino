@@ -83,6 +83,10 @@ void updateThrottle() {
 
   // read the voltage from the throttle pin
   throttleValue = analogRead(INPUT_THROTTLE);
+#ifdef DEBUG
+  Serial.printf("Throttle Value: %d\n", throttleValue);
+#endif
+
   // calculate the pixel ratio
   pixelRatio = (float)throttleValue / (float)inputDivisor;
   maxThrottle = pixelRatio >= 0.80;  // 80% or more means max throttle
@@ -90,28 +94,26 @@ void updateThrottle() {
   stateChange = (throttleValue != prevThrottleState) || (maxThrottle != prevMaxThrottle);
   // reset our `prev` values for next check
   prevThrottleState = throttleValue;
-  prevMaxThrottle = MaxThrottle
+  prevMaxThrottle = maxThrottle;
 
-    // Only update the throttle LEDs if there's a change in throttle state
-    if (stateChange) {
-#ifdef DEBUG
-    Serial.printf("Throttle Value: %d\n", throttleValue);
-#endif
-    if (throttleValue > THROTTLE_MIN) {
-      // Calculate the ratio as a float but then save it to to `numIlluminatedPixels` as an
-      // integer result of the integer multiplication.
-
-      numIlluminatedPixels = pixelRatio * NUM_THROTTLE_LEDS;
+  if (stateChange) {
+    if (maxThrottle) {
+      // Set all throttle LEDs to WHITE
+      for (int j = 0; j < NUM_THROTTLE_LEDS; j++) tLeds[j] = CRGB::White;
     } else {
-      numIlluminatedPixels = 0;
-    }
+      if (throttleValue > THROTTLE_MIN) {
+        numIlluminatedPixels = pixelRatio * NUM_THROTTLE_LEDS;
+      } else {
+        numIlluminatedPixels = 0;
+      }
 #ifdef DEBUG
-    Serial.printf("Pixels: %d\n", numIlluminatedPixels);
+      Serial.printf("Pixels: %d\n", numIlluminatedPixels);
 #endif
-    FastLED.clear();
-    if (numIlluminatedPixels > 0) {
-      // light the green ones based on the throttle value
-      fill_solid(tLeds, numIlluminatedPixels, CRGB::Green);
+      FastLED.clear();
+      if (numIlluminatedPixels > 0) {
+        // light the green ones based on the throttle value
+        fill_solid(tLeds, numIlluminatedPixels, CRGB::Green);
+      }
     }
   }
 }
