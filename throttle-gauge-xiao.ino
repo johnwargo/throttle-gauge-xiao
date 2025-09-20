@@ -59,8 +59,8 @@ void setup() {
   FastLED.addLeds<NEOPIXEL, THROTTLE_LED_PIN>(tLeds, NUM_THROTTLE_LEDS);
   FastLED.addLeds<NEOPIXEL, BRAKE_LED_PIN>(bLeds, NUM_BRAKE_LEDS);
 
-  pinMode(INPUT_THROTTLE, INPUT);
-  pinMode(INPUT_BRAKE, INPUT);
+  pinMode(INPUT_THROTTLE, INPUT_PULLDOWN);
+  pinMode(INPUT_BRAKE, INPUT_PULLDOWN);
 
   // test the LEDs, show that they work
   testLEDs();
