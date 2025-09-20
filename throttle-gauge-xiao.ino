@@ -13,12 +13,14 @@
 #define NUM_BRAKE_LEDS 5
 #define NUM_THROTTLE_LEDS 15
 
-#define BRAKE_LED_PIN 3
-#define THROTTLE_LED_PIN 2
+#define BRAKE_LED_PIN 12
+#define THROTTLE_LED_PIN 13
 
 #define INPUT_BRAKE A0
 #define INPUT_THROTTLE A1
 #define THROTTLE_MIN 600
+
+#define testDelay 15
 
 // FastLED LED Arrays
 CRGB tLeds[NUM_THROTTLE_LEDS];
@@ -56,10 +58,12 @@ void setup() {
   FastLED.setBrightness(255);
   FastLED.addLeds<NEOPIXEL, THROTTLE_LED_PIN>(tLeds, NUM_THROTTLE_LEDS);
   FastLED.addLeds<NEOPIXEL, BRAKE_LED_PIN>(bLeds, NUM_BRAKE_LEDS);
-  testLEDs();
 
   pinMode(INPUT_THROTTLE, INPUT);
   pinMode(INPUT_BRAKE, INPUT);
+
+  // test the LEDs, show that they work
+  testLEDs();
 }
 
 void loop() {
@@ -124,10 +128,10 @@ void updateThrottle() {
 void updateBrake() {
   CRGB ledColor;
   bool brakeState;
-  
+
   brakeState = (analogRead(INPUT_BRAKE) > brakeThreshold);
   // do we have a change in brake state?
-  if (brakeState != prevBrakeState) {        
+  if (brakeState != prevBrakeState) {
     prevBrakeState = brakeState;
     // then update the LEDs
     ledColor = (brakeState) ? CRGB::Red : CRGB::Black;
@@ -137,26 +141,29 @@ void updateBrake() {
 }
 
 void testLEDs() {
-#define testDelay 18
   Serial.println("Testing LEDs");
 
   FastLED.clear();
   FastLED.show();
   for (int i = 0; i < NUM_THROTTLE_LEDS; i++) {
+    Serial.println(i);
     tLeds[i] = CRGB::Green;
     FastLED.show();
     delay(testDelay);
   }
   for (int i = NUM_THROTTLE_LEDS - 1; i > -1; i--) {
+    Serial.println(i);
     tLeds[i] = CRGB::Black;
     FastLED.show();
     delay(testDelay);
   }
-  FastLED.clear();
-  FastLED.show();
-  fill_solid(bLeds, NUM_BRAKE_LEDS, CRGB::Red);
-  FastLED.show();
-  delay(1000);
-  FastLED.clear();
-  FastLED.show();
+
+  for (int i = 0; i < 3; i++) {
+    fill_solid(bLeds, NUM_BRAKE_LEDS, CRGB::Red);
+    FastLED.show();
+    delay(250);
+    FastLED.clear();
+    FastLED.show();
+    delay(100);
+  }
 }
