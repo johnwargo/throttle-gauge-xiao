@@ -13,11 +13,11 @@
 #define NUM_BRAKE_LEDS 5
 #define NUM_THROTTLE_LEDS 15
 
-#define BRAKE_LED_PIN 13
-#define THROTTLE_LED_PIN 12
+#define BRAKE_LED_PIN 12
+#define THROTTLE_LED_PIN 13
 
-#define INPUT_BRAKE A0
-#define INPUT_THROTTLE A1
+#define INPUT_BRAKE A1
+#define INPUT_THROTTLE A0
 #define THROTTLE_MIN 600
 
 #define testDelay 15
