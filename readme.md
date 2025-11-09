@@ -2,6 +2,25 @@
 
 A simple throttle guage using a strip of NeoPixels and an Adafruit Feather.
 
+## Task List
+
+- [ ] Populate 3D print files folder
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+
+
 ## Background
 
 for my friend's Porsche Boxter race car.
