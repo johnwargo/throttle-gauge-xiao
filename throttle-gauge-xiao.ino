@@ -20,7 +20,7 @@
 #define INPUT_THROTTLE A0
 #define THROTTLE_MIN 600
 
-#define testDelay 15
+#define testDelay 15  //ms
 
 // FastLED LED Arrays
 CRGB tLeds[NUM_THROTTLE_LEDS];
@@ -70,6 +70,8 @@ void loop() {
   updateThrottle();
   updateBrake();
   delay(50);
+  // testLEDs();
+  // delay(1000);
 }
 
 void updateThrottle() {
