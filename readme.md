@@ -10,17 +10,7 @@ A simple throttle guage using a strip of NeoPixels and an Adafruit Feather.
 - [ ] 
 - [ ] 
 - [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
+
 
 
 ## Background
