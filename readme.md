@@ -45,13 +45,11 @@ Looking at the finished circuit board, it all came together very nicely and neat
 
 ![Fritzing PCB View](images/fritzing-pcb.png)
 
-## Assembling the Hardware
+I was able to order professionally produced circuit boards directly from the Fritzing application. Really cool stuff.
 
+Assembling the hardware meant soldering header pins on each of the NeoPixels then soldering each to the circuit board. Very tedious but rewarding. You can see the completed assembly at the top of this document. I soldered a set of header pins to the end of the board for breadboard prototyping, but for the final implementation I soldered 6 feet of wire to the board so we could hide the hardware deep within the car.
 
-## Project Source Code
-
-
-### Inputs and Outputs
+## Inputs and Outputs
 
 The circuit drives the NeoPixel arrays on the ESP32's digital pins 2 (throttle) and 3 (brake). 
 
@@ -72,7 +70,16 @@ The circuit reads the throttle and brake inputs via analog inputs A0 and A1:
 ```
 
 
-## Reference
+
+## Dealing With High Voltage Inputs
+
+For this car, the throttle output was less than 3v, so measuring it via the analog input pins on the ESP32 wasn't an issue.
+
+The brakes, however, were another issue all together. I didn't have access to the brake pedal switch (I probably could have, but didn't ask), the way the original gauge was setup was to simply measure the output voltage from the wires sending power to the brake lights at the back of the car (which were no longer there). Because of this, to tell if the brakes were on or off I had to look for the presence of ~15V (on) or 0V (off). 
+
+Unfortunately, the ESP32 can't measure 15V so I had to come up with another way to do this.
+
+I implemented a simple Voltage Divider using two resistors as shown below. It converted the maximum 15V input into a 3V input the ESP32 could handle. Cool stuff.
 
 [Voltage Divider](https://ohmslawcalculator.com/voltage-divider-calculator)
 
