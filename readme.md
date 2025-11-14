@@ -1,8 +1,6 @@
 # Throttle Gauge
 
-> This is a WORK IN PROGRESS
-
-A simple throttle gauge using a strip of NeoPixels and an Adafruit Feather device.
+A simple race car throttle and brake gauge using a strip of NeoPixels and an Adafruit Feather device.
 
 ## Background
 
