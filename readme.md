@@ -1,4 +1,4 @@
-# Throttle Gauge
+# Throttle & Brake Gauge
 
 A simple race car throttle and brake gauge using a strip of NeoPixels and an Adafruit Feather device.
 
