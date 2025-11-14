@@ -41,6 +41,8 @@ Rather than manage with the throttle and brake LEDs as a single unit in the code
 
 This allows me to update the LED arrays separately in the code and not worry about the state of the others. 
 
+Looking at the finished circuit board, it all came together very nicely and neatly.
+
 ![Fritzing PCB View](images/fritzing-pcb.png)
 
 ## Assembling the Hardware
