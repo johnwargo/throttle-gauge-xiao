@@ -2,21 +2,34 @@
 
 > This is a WORK IN PROGRESS
 
-A simple throttle guage using a strip of NeoPixels and an Adafruit Feather device.
+A simple throttle gauge using a strip of NeoPixels and an Adafruit Feather device.
 
 ## Background
 
-for my friend's Porsche Boxter race car.
+My friend Scott has a Porsche Boxter he uses for Autocross Racing; you may know Scott as the designer that helps make most of my apps and sites look good. He had a custom throttle gauge made out of a bunch of LEDs mounted under the hood of the car so when he videotaped his runs, he could watch how us uses the throttle and brakes as he works his way through the course.
+
+For a variety of reasons, his existing gauge wasn't working for him; the biggest issue was that he had multiple wires running to each LED and with all the forces operating on the car during a run, LEDs or wire connections were starting to fail.
+
+He asked me if I could help him build a new, more stable version and I did; this project contains the source files for that project.
+
+He essentially wanted two separate gauges: throttle and brakes. He wanted a sort of meter that showed in real-time how hard he was pushing on the accelerator. He also wanted to know when he was pushing on the brakes. 
+
+I decided to use a strip of 25 Adafruit NeoPixel devices, 20 for the throttle and 5 for the brake indicator. 
+
+For the throttle, the 20 LEDs illuminate in sequence, illuminating a single LED green when he pushes lightly on the accelerator and all 20 illuminated when the accelerator's pushed all the way to the floor. At 80% throttle, the LEDs switch from green to white, so on the video recording its easier to see that the accelerator's floored.
+
+For the brake gauge, the gauge is binary, all LEDs on and Red when he depresses the brake pedal and all off when the pedal is not depressed.
+
 
 ## Hardware Components
 
+I built the project using the following components:
+
 + [Adafruit ESP32-S3 Feather with 4MB Flash 2MB PSRAM](https://www.adafruit.com/product/5477)
 + [Breadboard-friendly RGB Smart NeoPixel - Sheet of 25](https://www.adafruit.com/product/1558)
-+ [12V to 5V DC Buck Converter](https://www.amazon.com/Converter-Voltage-Waterproof-Regulator-Step-Down/dp/B07Y2V1F8V)
++ [12V to 5V DC Buck Converter](https://www.amazon.com/Converter-Voltage-Waterproof-Regulator-Step-Down/dp/B07Y2V1F8V) to power the LEDs and Feather device.
 
 ## Building the NeoPixel Strip
-
-The guage is a strip of 20 Adafruit NeoPixels arranged in a strip. The first 15 represent the throttle position (from 1 to 15). Illuminating the NeoPixels in Green until the throttle hits 80%, then all NeoPixels turn White. The last 5 NeoPixels indicate whether the brake is on or off; the final 5 NeoPixels illuminate Red when the driver presses the brake pedal.
 
 ![NeoPixel strip](images/neopixel-strip.jpg)
 
