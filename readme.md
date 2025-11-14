@@ -2,16 +2,7 @@
 
 > This is a WORK IN PROGRESS
 
-A simple throttle guage using a strip of NeoPixels and an Adafruit Feather.
-
-## Task List
-
-- [ ] Populate 3D print files folder
-- [ ] 
-- [ ] 
-- [ ] 
-
-
+A simple throttle guage using a strip of NeoPixels and an Adafruit Feather device.
 
 ## Background
 
