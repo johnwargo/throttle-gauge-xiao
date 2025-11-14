@@ -49,6 +49,8 @@ Assembling the hardware meant soldering header pins on each of the NeoPixels the
 
 ## Inputs and Outputs
 
+To change the configuration for your particular hardware configuration, change the following code:
+
 The circuit drives the NeoPixel arrays on the ESP32's digital pins 2 (throttle) and 3 (brake). 
 
 ``` c
@@ -67,9 +69,7 @@ The circuit reads the throttle and brake inputs via analog inputs A0 and A1:
 #define INPUT_THROTTLE A1
 ```
 
-
-
-## Dealing With High Voltage Inputs
+## Measuring High(er) Voltage Inputs
 
 For this car, the throttle output was less than 3v, so measuring it via the analog input pins on the ESP32 wasn't an issue.
 
