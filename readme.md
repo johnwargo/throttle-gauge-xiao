@@ -33,8 +33,13 @@ I built the project using the following components:
 
 ![NeoPixel strip](images/neopixel-strip.jpg)
 
+To make the gauge easier to assemble, I created a circuit board for it using [Fritzing](https://fritzing.org/). I always wanted to learn how to design my own circuit boards, so this was my very first. You can find the design for the board in the repository's [Fritzing](Fritzing) folder. 
 
-To make the gauge easier to assemble, I created a circuit board for it using [Fritzing](https://fritzing.org/). I always wanted to learn how to design my own circuit boards, so this was my very first. You can find the design for the board in the repository's [Fritzing](Fritzing) folder.
+Rather than manage with the throttle and brake LEDs as a single unit in the code, I decided to separate them in the hardware design. So, the throttle gauge is a strip of 20 interconnected NeoPixels connected to VCC, GND, and one of the digital output pins on the Feather device through header pins on the edge of the circuit board. The brake gauge is 5 interconnected NeoPixels connected the same way, only to a different digital output pin on the Feather device. 
+
+![Gauge Schematic](images/fritzing-schematic.png)
+
+This allows me to update the LED arrays separately in the code and not worry about the state of the others. 
 
 ![Fritzing PCB View](images/fritzing-pcb.png)
 
