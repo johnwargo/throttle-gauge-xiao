@@ -31,7 +31,8 @@ CRGB bLeds[NUM_BRAKE_LEDS];
 // the total voltage output from throttle to ensure we can max out the gauge
 // const int inputDivisor = 1023;  // for Arduino devices
 // const int inputDivisor = 4095;  // for ESP32 devices
-const int inputDivisor = 4095;  // for ESP32 devices
+// const int inputDivisor = 4095;  // for ESP32 devices
+const int inputDivisor = 2200;  // for ESP32 devices
 const int brakeThreshold = inputDivisor / 2;
 
 int prevThrottleState = -1;
