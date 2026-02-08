@@ -39,6 +39,7 @@ const int inputDivisor = 4095;  // for ESP32 devices
 const int brakeThreshold = inputDivisor / 2;
 const int throttleFloor = 340;
 const int throttleApogy = 3500;
+const float maxThrottle = THROTTLE_MAX * 0.9;
 const float pixelRatio = (THROTTLE_MAX - THROTTLE_MIN) / NUM_THROTTLE_LEDS;
 
 int prevThrottleState = -1;
@@ -76,8 +77,6 @@ void loop() {
   updateThrottle();
   updateBrake();
   delay(50);
-  // testLEDs();
-  // delay(1000);
 }
 
 void updateThrottle() {
@@ -90,7 +89,6 @@ void updateThrottle() {
   int throttleValue;
   int numIlluminatedPixels;
   float pixelRatio;
-  bool maxThrottle;
   bool throttleStateChange;
 
   // read the voltage from the throttle pin
@@ -99,13 +97,6 @@ void updateThrottle() {
   Serial.printf("Throttle Value: %d\n", throttleValue);
 #endif
 
-  // calculate the pixel ratio
-  // rmeoved 2026-02-08
-  // pixelRatio = (float)throttleValue / (float)inputDivisor;
-  // Pixel Ratio = ()
-  // pixelRatio =
-
-  maxThrottle = pixelRatio >= 0.80;  // 80% or more means max throttle
   // Did the state change in any way?
   throttleStateChange = (throttleValue != prevThrottleState) || (maxThrottle != prevMaxThrottle);
   // reset our `prev` values for next check
@@ -113,27 +104,26 @@ void updateThrottle() {
   prevMaxThrottle = maxThrottle;
 
   if (throttleStateChange) {
-    if (maxThrottle) {
+    if (throttleValue > maxThrottle) { // higher than 90%
       // Set all throttle LEDs to WHITE
       for (int i = 0; i < NUM_THROTTLE_LEDS; i++) tLeds[i] = CRGB::White;
     } else {
+      // throttleValue <= 90%
       // Set only a portion of the throttle LEDs to Green
       if (throttleValue > THROTTLE_MIN) {
         // numIlluminatedPixels = pixelRatio * NUM_THROTTLE_LEDS;
         numIlluminatedPixels = (throttleValue - THROTTLE_MIN) / pixelRatio;
       } else {
+        // all off
         numIlluminatedPixels = 0;
       }
-#ifdef DEBUG
-      Serial.printf("Pixels: %d\n", numIlluminatedPixels);
-#endif
-      if (numIlluminatedPixels > 0) {
-        // light LEDs green based on the current throttle value
-        for (int i = 0; i < numIlluminatedPixels; i++) tLeds[i] = CRGB::Green;
-      }
-      // then set the rest to black
-      for (int i = numIlluminatedPixels; i < NUM_THROTTLE_LEDS; i++) tLeds[i] = CRGB::Black;
     }
+    if (numIlluminatedPixels > 0) {
+      // light LEDs green based on the current throttle value
+      for (int i = 0; i < numIlluminatedPixels; i++) tLeds[i] = CRGB::Green;
+    }
+    // then set the rest to black
+    for (int i = numIlluminatedPixels; i < NUM_THROTTLE_LEDS; i++) tLeds[i] = CRGB::Black;
     FastLED.show();
   }
 }
