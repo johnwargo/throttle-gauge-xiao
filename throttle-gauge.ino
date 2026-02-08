@@ -10,6 +10,8 @@
 
 #define DEBUG
 
+#define testDelay 15  //ms
+
 #define NUM_BRAKE_LEDS 5
 #define NUM_THROTTLE_LEDS 15
 
@@ -18,9 +20,12 @@
 
 #define INPUT_BRAKE A1
 #define INPUT_THROTTLE A0
-#define THROTTLE_MIN 600
 
-#define testDelay 15  //ms
+// February 8, rethinking max voltage readings
+// Max voltage readings: 3276 -> 3931
+// 0.4V = 328 (measured on the car)
+#define THROTTLE_MIN 340
+#define THROTTLE_MAX 3500
 
 // FastLED LED Arrays
 CRGB tLeds[NUM_THROTTLE_LEDS];
@@ -30,10 +35,11 @@ CRGB bLeds[NUM_BRAKE_LEDS];
 // Adjusts maximum voltage levels read by the device will adjust this based on
 // the total voltage output from throttle to ensure we can max out the gauge
 // const int inputDivisor = 1023;  // for Arduino devices
-// const int inputDivisor = 4095;  // for ESP32 devices
-// 
-const int inputDivisor = 2200;  // for ESP32 devices
+const int inputDivisor = 4095;  // for ESP32 devices
 const int brakeThreshold = inputDivisor / 2;
+const int throttleFloor = 340;
+const int throttleApogy = 3500;
+const float pixelRatio = (THROTTLE_MAX - THROTTLE_MIN) / NUM_THROTTLE_LEDS;
 
 int prevThrottleState = -1;
 bool prevBrakeState = false;
@@ -95,7 +101,11 @@ void updateThrottle() {
 #endif
 
   // calculate the pixel ratio
-  pixelRatio = (float)throttleValue / (float)inputDivisor;
+  // rmeoved 2026-02-08
+  // pixelRatio = (float)throttleValue / (float)inputDivisor;
+  // Pixel Ratio = ()
+  // pixelRatio =
+
   maxThrottle = pixelRatio >= 0.80;  // 80% or more means max throttle
   // Did the state change in any way?
   throttleStateChange = (throttleValue != prevThrottleState) || (maxThrottle != prevMaxThrottle);
@@ -110,7 +120,8 @@ void updateThrottle() {
     } else {
       // Set only a portion of the throttle LEDs to Green
       if (throttleValue > THROTTLE_MIN) {
-        numIlluminatedPixels = pixelRatio * NUM_THROTTLE_LEDS;
+        // numIlluminatedPixels = pixelRatio * NUM_THROTTLE_LEDS;
+        numIlluminatedPixels = (throttleValue - THROTTLE_MIN) / pixelRatio;
       } else {
         numIlluminatedPixels = 0;
       }
@@ -149,13 +160,11 @@ void testLEDs() {
   FastLED.clear();
   FastLED.show();
   for (int i = 0; i < NUM_THROTTLE_LEDS; i++) {
-    Serial.println(i);
     tLeds[i] = CRGB::Green;
     FastLED.show();
     delay(testDelay);
   }
   for (int i = NUM_THROTTLE_LEDS - 1; i > -1; i--) {
-    Serial.println(i);
     tLeds[i] = CRGB::Black;
     FastLED.show();
     delay(testDelay);
