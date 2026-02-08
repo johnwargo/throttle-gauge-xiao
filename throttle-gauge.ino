@@ -80,15 +80,9 @@ void loop() {
 }
 
 void updateThrottle() {
-
-  // Conditions
-  // throttle value is the same as previous - do nothing
-  // throttle value was greater than 80% and is greater than 80% now - do nothing
-  // throttle value is different than last time - update LED state
-
   int throttleValue;
   int numIlluminatedPixels;
-  float pixelRatio;
+  // float pixelRatio;
   bool throttleStateChange;
 
   // read the voltage from the throttle pin
