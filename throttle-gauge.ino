@@ -98,8 +98,8 @@ void updateThrottle() {
   isMaxThrottle = throttleValue > maxThrottleValue;
   isMinThrottle = throttleValue < THROTTLE_MIN;
 
-  // Did the throttle value change? it pretty much always will
-  throttleStateChange = (throttleValue != prevThrottleValue);
+  // Did the throttle value change at least one pixel's worth?
+  throttleStateChange = abs(throttleValue - prevThrottleValue) > pixelRatio;
   // But, are we sitting below throttleMin?
   if (isMinThrottle && wasMinThrottle) {
     // Then just leave it alone
