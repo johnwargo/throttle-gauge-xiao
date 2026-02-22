@@ -25,7 +25,7 @@
 // Max voltage readings: 3276 -> 3931
 // 0.4V = 328 (measured on the car)
 #define THROTTLE_MIN 450
-#define THROTTLE_MAX 3500
+#define THROTTLE_MAX 2000 //was 3500
 
 // FastLED LED Arrays
 CRGB tLeds[NUM_THROTTLE_LEDS];
@@ -37,8 +37,6 @@ CRGB bLeds[NUM_BRAKE_LEDS];
 // const int inputDivisor = 1023;  // for Arduino devices
 const int inputDivisor = 4095;  // for ESP32 devices
 const int brakeThreshold = inputDivisor / 2;
-const int throttleFloor = 340;
-const int throttleApogy = 3500;
 const float maxThrottleValue = THROTTLE_MAX * 0.9;
 const float pixelRatio = (THROTTLE_MAX - THROTTLE_MIN) / NUM_THROTTLE_LEDS;
 
