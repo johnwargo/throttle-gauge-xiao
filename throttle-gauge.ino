@@ -1,5 +1,5 @@
 /************************************************************
- * Throttle Gauge (XIAO ESP32C6)
+ * Throttle Gauge
  * By John M. Wargo
  * https://johnwargo.com
  * 
