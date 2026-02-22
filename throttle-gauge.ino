@@ -24,7 +24,7 @@
 // February 8, rethinking max voltage readings
 // Max voltage readings: 3276 -> 3931
 // 0.4V = 328 (measured on the car)
-#define THROTTLE_MIN 340
+#define THROTTLE_MIN 450
 #define THROTTLE_MAX 3500
 
 // FastLED LED Arrays
@@ -42,7 +42,8 @@ const int throttleApogy = 3500;
 const float maxThrottleValue = THROTTLE_MAX * 0.9;
 const float pixelRatio = (THROTTLE_MAX - THROTTLE_MIN) / NUM_THROTTLE_LEDS;
 
-int prevThrottleValue = -1;
+// int prevThrottleValue = -1;
+int prevPixelCount = 0;
 bool wasMaxThrottle = false;
 bool wasMinThrottle = false;
 bool prevBrakeState = false;
@@ -82,12 +83,12 @@ void loop() {
 
 void updateThrottle() {
 
-  bool throttleStateChange;
+  bool pixelStateChange;
   bool isMaxThrottle;
   bool isMinThrottle;
 
   int throttleValue;
-  int numIlluminatedPixels;
+  int currentPixelCount;
 
   // read the voltage from the throttle pin
   throttleValue = analogRead(INPUT_THROTTLE);
@@ -99,44 +100,42 @@ void updateThrottle() {
   isMinThrottle = throttleValue < THROTTLE_MIN;
 
   // Did the throttle value change at least one pixel's worth?
-  throttleStateChange = abs(throttleValue - prevThrottleValue) > pixelRatio;
+  // throttleStateChange = abs(throttleValue - prevThrottleValue) > pixelRatio;
+  currentPixelCount = (throttleValue - THROTTLE_MIN) / pixelRatio;
+  // did the number of illuminated pixels change?
+  pixelStateChange = currentPixelCount != prevPixelCount;
   // But, are we sitting below throttleMin?
   if (isMinThrottle && wasMinThrottle) {
     // Then just leave it alone
-    throttleStateChange = false;
+    pixelStateChange = false;
   }
   // But, are we sitting above max throttle?
   if (isMaxThrottle && wasMaxThrottle) {
     // Then just leave it alone
-    throttleStateChange = false;
+    pixelStateChange = false;
   }
 
   // reset our previous loop values for the next check
-  prevThrottleValue = throttleValue;
+  prevPixelCount = currentPixelCount;
+  // prevThrottleValue = throttleValue;
   wasMaxThrottle = isMaxThrottle;
   wasMinThrottle = isMinThrottle;
 
-  if (throttleStateChange) {
+  if (pixelStateChange) {
     if (isMaxThrottle) {  // higher than 90%
       // Set all throttle LEDs to WHITE
       for (int i = 0; i < NUM_THROTTLE_LEDS; i++) tLeds[i] = CRGB::White;
     } else {
       // throttleValue <= 90%
       // Set only a portion of the throttle LEDs to Green
-      if (throttleValue > THROTTLE_MIN) {
-        // numIlluminatedPixels = pixelRatio * NUM_THROTTLE_LEDS;
-        numIlluminatedPixels = (throttleValue - THROTTLE_MIN) / pixelRatio;
-      } else {
-        // all off
-        numIlluminatedPixels = 0;
-      }
+      if (isMinThrottle) currentPixelCount = 0;
     }
-    if (numIlluminatedPixels > 0) {
+    if (currentPixelCount > 0) {
       // light LEDs green based on the current throttle value
-      for (int i = 0; i < numIlluminatedPixels; i++) tLeds[i] = CRGB::Green;
+      for (int i = 0; i < currentPixelCount; i++) tLeds[i] = CRGB::Green;
     }
     // then set the rest to black
-    for (int i = numIlluminatedPixels; i < NUM_THROTTLE_LEDS; i++) tLeds[i] = CRGB::Black;
+    for (int i = currentPixelCount; i < NUM_THROTTLE_LEDS; i++) tLeds[i] = CRGB::Black;
     FastLED.show();
   }
 }
