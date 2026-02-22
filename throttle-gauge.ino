@@ -39,12 +39,13 @@ const int inputDivisor = 4095;  // for ESP32 devices
 const int brakeThreshold = inputDivisor / 2;
 const int throttleFloor = 340;
 const int throttleApogy = 3500;
-const float maxThrottle = THROTTLE_MAX * 0.9;
+const float maxThrottleValue = THROTTLE_MAX * 0.9;
 const float pixelRatio = (THROTTLE_MAX - THROTTLE_MIN) / NUM_THROTTLE_LEDS;
 
-int prevThrottleState = -1;
+int prevThrottleValue = -1;
+bool wasMaxThrottle = false;
+bool wasMinThrottle = false;
 bool prevBrakeState = false;
-bool prevMaxThrottle = false;
 
 void setup() {
 
@@ -76,14 +77,17 @@ void setup() {
 void loop() {
   updateThrottle();
   updateBrake();
-  delay(50);
+  delay(200);
 }
 
 void updateThrottle() {
+
+  bool throttleStateChange;
+  bool isMaxThrottle;
+  bool isMinThrottle;
+
   int throttleValue;
   int numIlluminatedPixels;
-  // float pixelRatio;
-  bool throttleStateChange;
 
   // read the voltage from the throttle pin
   throttleValue = analogRead(INPUT_THROTTLE);
@@ -91,14 +95,29 @@ void updateThrottle() {
   Serial.printf("Throttle Value: %d\n", throttleValue);
 #endif
 
-  // Did the state change in any way?
-  throttleStateChange = (throttleValue != prevThrottleState) || (maxThrottle != prevMaxThrottle);
-  // reset our `prev` values for next check
-  prevThrottleState = throttleValue;
-  prevMaxThrottle = maxThrottle;
+  isMaxThrottle = throttleValue > maxThrottleValue;
+  isMinThrottle = throttleValue < THROTTLE_MIN;
+
+  // Did the throttle value change? it pretty much always will
+  throttleStateChange = (throttleValue != prevThrottleValue);
+  // But, are we sitting below throttleMin?
+  if (isMinThrottle && wasMinThrottle) {
+    // Then just leave it alone
+    throttleStateChange = false;
+  }
+  // But, are we sitting above max throttle?
+  if (isMaxThrottle && wasMaxThrottle) {
+    // Then just leave it alone
+    throttleStateChange = false;
+  }
+
+  // reset our previous loop values for the next check
+  prevThrottleValue = throttleValue;
+  wasMaxThrottle = isMaxThrottle;
+  wasMinThrottle = isMinThrottle;
 
   if (throttleStateChange) {
-    if (throttleValue > maxThrottle) { // higher than 90%
+    if (isMaxThrottle) {  // higher than 90%
       // Set all throttle LEDs to WHITE
       for (int i = 0; i < NUM_THROTTLE_LEDS; i++) tLeds[i] = CRGB::White;
     } else {
