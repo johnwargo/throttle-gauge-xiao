@@ -99,8 +99,8 @@ void updateThrottle() {
   isMinThrottle = throttleValue < THROTTLE_MIN;
 
   // Did the throttle value change at least one pixel's worth?
-  // throttleStateChange = abs(throttleValue - prevThrottleValue) > pixelRatio;
-  currentPixelCount = (throttleValue - THROTTLE_MIN) / pixelRatio;
+  currentPixelCount = (throttleValue > THROTTLE_MIN) ? (throttleValue - THROTTLE_MIN) / pixelRatio : 0;
+
   // did the number of illuminated pixels change?
   pixelStateChange = currentPixelCount != prevPixelCount;
   // But, are we sitting below throttleMin?
@@ -120,10 +120,11 @@ void updateThrottle() {
   wasMinThrottle = isMinThrottle;
 
   if (pixelStateChange) {
+    // then the numbers of illuminated pixels changed
     if (isMaxThrottle) {
       // Set all throttle LEDs to WHITE
       for (int i = 0; i < NUM_THROTTLE_LEDS; i++) tLeds[i] = CRGB::White;
-    } else {  // ! isMaxThrottle
+    } else {  // else not isMaxThrottle
       // first, set pixel count to zero if no throttle
       if (isMinThrottle) {
         // No pixels illuminated, this allows the code to skip the next if statement
@@ -137,9 +138,9 @@ void updateThrottle() {
       }
       // then set the rest to black
       for (int i = currentPixelCount; i < NUM_THROTTLE_LEDS; i++) tLeds[i] = CRGB::Black;
-    }
+    }  //if (isMaxThrottle)
     FastLED.show();
-  }
+  } // if (pixelStateChange) 
 }
 
 void updateBrake() {
